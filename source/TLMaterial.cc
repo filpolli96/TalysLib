@@ -459,7 +459,26 @@ void Find_nn_n2n_gammas(vector<GammaTransition*> &GT,vector<GammaTransition*> &G
 	}
 }
 
-GammaPeakData TLMaterial::FindGammaTransitionsForInterval(vector<GammaTransition*> GT_,double EMin,double EMax,double Length)//толщина - в см
+Nucleus* TLMaterial::FindNuclide(int Z, int A)
+{
+	for(unsigned int i=0;i<Nuclides.size();i++)
+	{
+		if(Nuclides[i]->Z==Z && Nuclides[i]->A==A)
+		{
+			return Nuclides[i];
+		}
+	}
+	return 0;
+}
+Nucleus* TLMaterial::FindNuclide(string NuclName)
+{
+	int Z,A;
+	//void GetAZ(string nucleus, int &Z, int &A);
+	GetAZ(NuclName,Z,A);
+	return FindNuclide(Z,A);
+}
+
+GammaPeakData TLMaterial::FindGammaTransitionsForInterval(vector<GammaTransition*> GT_,double EMin,double EMax,double Length,bool Add_n2n)//толщина - в см
 {	
 	GammaPeakData result;
 	result.Multipolarity=0;
@@ -471,6 +490,18 @@ GammaPeakData TLMaterial::FindGammaTransitionsForInterval(vector<GammaTransition
 		{
 			//cout<<"FindGammaTransitionsForInterval: "<<E<<"\n";
 			GT.push_back(GT_[i]);
+			if(Add_n2n && GT_[i]->fLevel->fNucleus->Reaction=="(n,n')")
+			{
+				Nucleus* Targ2n=GT_[i]->fLevel->fNucleus->fMotherNucleus->fMaterial->FindNuclide(GT_[i]->fLevel->fNucleus->fMotherNucleus->Z,GT_[i]->fLevel->fNucleus->fMotherNucleus->A);
+				if(Targ2n)
+				{
+					GammaTransition *gt2=Targ2n->GetBestTransition(GT_[i]->Energy,0.1);
+					if(gt2)
+					{
+						GT.push_back(gt2);
+					}
+				}
+			}
 		}
 	}
 	if(GT.size()==0)

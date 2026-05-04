@@ -1218,7 +1218,7 @@ class TLMaterial:public TObject
 	void SaveToXLSX(string filename);
 	GammaPeakData FindGammaTransitionsForPeak(double Energy,double Sigma,double CrossSectionThreshold=0, double Length=0,bool UseAbundancy=true, bool AtLeastOne=false,double EThr=14.1, bool Always_n2n=false);//толщина - в см
 	GammaPeakData FindGammaTransitionsForInterval(double EMin,double EMax,double CrossSectionThreshold=0, double Length=0,bool UseAbundancy=true, bool AtLeastOne=false,double EThr=14.1, bool Always_n2n=false);//толщина - в см
-	static GammaPeakData FindGammaTransitionsForInterval(vector<GammaTransition*> GT_,double EMin,double EMax,double Length=0);//толщина - в см
+	static GammaPeakData FindGammaTransitionsForInterval(vector<GammaTransition*> GT_,double EMin,double EMax,double Length=0,bool Add_n2n=false);//толщина - в см
 	void PrintGammas(double CrossSectionThreshold=0,bool UseAbundancy=true);
 	vector<GammaTransition*> GetGammaTransitions(double CrossSectionThreshold=0,bool UseAbundancy=true);
 	vector<GammaTransition*> GetGammaTransitionsE(double EnergyThreshold=0,double CrossSectionThreshold=0,bool UseAbundancy=true);
@@ -1236,6 +1236,8 @@ class TLMaterial:public TObject
 			delete Nuclides[i];
 		}
 	}
+	Nucleus* FindNuclide(int Z, int A);
+	Nucleus* FindNuclide(string NuclName);
 	ClassDef(TLMaterial, CLASSVERSION);
 };
 
