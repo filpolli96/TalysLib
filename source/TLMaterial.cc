@@ -492,7 +492,7 @@ GammaPeakData TLMaterial::FindGammaTransitionsForInterval(vector<GammaTransition
 			GT.push_back(GT_[i]);
 			if(Add_n2n && GT_[i]->fLevel->fNucleus->Reaction=="(n,n')")
 			{
-				Nucleus* Targ2n=GT_[i]->fLevel->fNucleus->fMotherNucleus->fMaterial->FindNuclide(GT_[i]->fLevel->fNucleus->fMotherNucleus->Z,GT_[i]->fLevel->fNucleus->fMotherNucleus->A);
+				Nucleus* Targ2n=GT_[i]->fLevel->fNucleus->fMotherNucleus->fMaterial->FindNuclide(GT_[i]->fLevel->fNucleus->fMotherNucleus->Z,GT_[i]->fLevel->fNucleus->fMotherNucleus->A+1);
 				if(Targ2n)
 				{
 					GammaTransition *gt2=Targ2n->GetBestTransition(GT_[i]->Energy,0.1);
@@ -513,7 +513,7 @@ GammaPeakData TLMaterial::FindGammaTransitionsForInterval(vector<GammaTransition
 	result.Sigma=(EMax-EMin)/2;
 	result.E=(EMin+EMax)/2;
 	result.fMaterial=GT[0]->fLevel->fNucleus->fMotherNucleus->fMaterial;
-	cout<<"Material:"<<result.fMaterial->MaterialFormula<<"\n";
+	//cout<<"Material:"<<result.fMaterial->MaterialFormula<<"\n";
 	double NAtoms=result.fMaterial->Density*6.02e23/result.fMaterial->GetMolarMass()*Length;
 	vector<TGraph*> Graphs;
 	vector<double> Multipliers;
@@ -540,6 +540,7 @@ GammaPeakData TLMaterial::FindGammaTransitionsForInterval(vector<GammaTransition
 			CSMax=GT[i]->TalysCrossSection*Stechiometry*Abun;
 			Multipolarity=GT[i]->GetMostProbableMultipolarity().J;
 		}*/
+		//cout<<"Eg: "<<GT[i]->Energy<<" "<<Init->Name<<" "<<GT[i]->fLevel->fNucleus->Reaction<<" density:"<<result.fMaterial->Density<<" length:"<<Length<<" MolarMass:"<<result.fMaterial->GetMolarMass()<<" Stechiometry:"<<Stechiometry<<" Abundance:"<<Init->Abundance<<"\n";
 		Multipliers.push_back(Stechiometry*Abun);
 		result.Reactions.push_back(Init->Name+GT[i]->fLevel->fNucleus->Reaction+GT[i]->fLevel->fNucleus->Name);
 		result.Centroid+=GT[i]->TalysCrossSection*Stechiometry*Abun*GT[i]->Energy;

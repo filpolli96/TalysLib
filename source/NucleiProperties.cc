@@ -3696,6 +3696,8 @@ Nucleus* Nucleus::FindProductByMT(int MT)
 	}
 	return 0;
 }
+
+
 /*Nucleus& Nucleus::operator =(const Nucleus& Nucl) 
 {
 	//проверка на самоприсваивание

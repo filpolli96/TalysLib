@@ -22,6 +22,7 @@
 #include "source/AdditionalInformation.cc"
 #include "source/TLElement.cc"
 #include "source/TLMaterial.cc"
+#include "source/TalysLibSPF.cpp"
 #include "ENDFReader/ENDFLib.cpp"
 #include "ENDFReader/EXFOR.cpp"
 #include "C4Reader/C4.cpp"

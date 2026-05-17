@@ -809,7 +809,6 @@ class NucleusData:public TObject
 class Nucleus:public NucleusData
 {
 	public:
-	
 	//EXFOR
 	
 	
@@ -1012,6 +1011,8 @@ class Nucleus:public NucleusData
 	private:
 	//using TObject::GetName;
 	using TObject::Copy;
+	
+
 	
 };
 
@@ -1289,3 +1290,21 @@ class SampleInformation:public TObject //класс, хранящий инфор
 };
 
 
+class TalysLibSPF//
+{
+	public:
+	double _GetNuclearMass(string nucleus);
+	double _GetAbundance(string nucleus);
+
+	double _GetNuclearMass(int Z, int A);
+	double _GetSeparationEnergy(string nucleus, string particle="n");
+	double _GetSeparationEnergy(int nucleus_Z, int nucleus_A, int particle_Z, int particle_A);
+
+	double _RecoilEnergyFromGammaEmission(double Egamma, string nuclide);
+	int _Nproc();
+	float _EvalKineticEnergy(float ma,float mA,float mb,float mB,float Ta,float angle,float Q);//reference: http://nuclphys.sinp.msu.ru/reactions/cinem.htm
+	float _EvalKineticEnergy(string a,string A,string b,string B,float Ta,float angle);//reference: http://nuclphys.sinp.msu.ru/reactions/cinem.htm
+	float _EvalKineticEnergy(string a,string A,string b,string B,float Ta,float angle,double Q);//reference: http://nuclphys.sinp.msu.ru/reactions/cinem.htm
+	double _RelKineticEnergy(float ma,float mA,float mb,float mB,float Ta,float angle);//релятивистская формула для кинетической энергии. Для расчета энергий неупруго рассеянных нейтронов нужно добавить Q к mB при вызове
+	ClassDef(TalysLibSPF, CLASSVERSION);
+};

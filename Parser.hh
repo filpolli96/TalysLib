@@ -141,3 +141,4 @@ float EvalKineticEnergy(string a,string A,string b,string B,float Ta,float angle
 float EvalKineticEnergy(string a,string A,string b,string B,float Ta,float angle,double Q);//reference: http://nuclphys.sinp.msu.ru/reactions/cinem.htm
 double RelKineticEnergy(float ma,float mA,float mb,float mB,float Ta,float angle);//релятивистская формула для кинетической энергии. Для расчета энергий неупруго рассеянных нейтронов нужно добавить Q к mB при вызове
 
+
