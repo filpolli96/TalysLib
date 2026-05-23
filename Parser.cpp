@@ -996,18 +996,37 @@ void GetAZ(string nucleus, int &Z, int &A)
 	{
 		Z=2;A=3; return;
 	}
+	//добавим более сложную логику анализа строки: возможны варианты записи AZ, ZZ-Z-AA, Z-AA,ZZ|Z|A,ZA.
+	string pre,pos;
+	bool was_nucl=false;
 	for(unsigned int i=0;i<nucleus.size();i++)
 	{
 		if((nucleus[i]>='A')&&(nucleus[i]<='z'))
 		{
 			name+=nucleus[i];
+			was_nucl=true;
 		}
 		if((nucleus[i]>='0')&&(nucleus[i]<='9'))
 		{
-			mass+=nucleus[i];
+			if(!was_nucl)
+			{
+				pre+=nucleus[i];
+			}
+			else
+			{
+				pos+=nucleus[i];
+			}
+			//mass+=nucleus[i];
 		}
 	}
-	A=atoi(mass.c_str());
+	if( (pre.size()==0) || (pre.size()>0 && pos.size()>0))
+	{
+		A=atoi(pos.c_str());
+	}
+	else if(pos.size()==0)
+	{
+		A=atoi(pre.c_str());
+	}
 	for(unsigned int i=0;i<119;i++)
 	{
 		string symbol=Atomic_symbols[i];

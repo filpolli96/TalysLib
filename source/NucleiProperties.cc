@@ -457,7 +457,22 @@ void Nucleus::Create(string Name,string Reaction)
 				OutgoingParticleMass=GetNuclearMass(OutgoingParticle);
 				ProjectileMass=GetNuclearMass(Projectile); 
 			}
-			Mass=GetNuclearMass(Name); 
+			Mass=GetNuclearMass(Name);
+			//float p_binding=0,n_binding=0,a_binding
+			if(Z>1)
+			{
+				p_binding=GetNuclearMass("p")+GetNuclearMass(Z-1,A-1)-Mass;
+				p_coulomb_barrier=1.2*(Z-1)/(pow(A-1,1.0/3.0));
+			}
+			if(A>1)
+			{
+				n_binding=GetNuclearMass("n")+GetNuclearMass(Z,A-1)-Mass;
+			}
+			if(A>4 && Z>2)
+			{
+				a_binding=GetNuclearMass("a")+GetNuclearMass(Z-2,A-4)-Mass;
+				a_coulomb_barrier=1.2*2*(Z-2)/(pow(A-2,1.0/3.0));
+			}
 		}
 		else
 		{
@@ -1092,6 +1107,31 @@ void Nucleus::ReadTalysCalculationResult_v2()
 						if(l->Gammas[i].FinalLevelNumber==LevF)
 						{
 							l->Gammas[i].TalysCrossSection=m.GetCell("xs",m.NRows-1);
+							if(!TalysLibManager::Instance().AllowNotPhysicalGamma)//убирает нефизичные гамма (как например от уровня 7,6 МэВ в 12С)
+							{
+								double binding=p_binding;
+								if(binding>n_binding)
+								{
+									binding=n_binding; 
+								}
+								if(binding>a_binding)
+								{
+									binding=a_binding;
+									if(binding<0)
+									{
+										binding=a_coulomb_barrier;
+										if(a_coulomb_barrier>p_coulomb_barrier)
+										{
+											binding=p_coulomb_barrier;
+										}
+									}
+								}
+								binding=binding*1000;
+								if(binding<l->Energy)
+								{
+									l->Gammas[i].TalysCrossSection=0;
+								}
+							}
 						}
 					}
 					//Production=m.GetCell("xs",m.NRows-1);

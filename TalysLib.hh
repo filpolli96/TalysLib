@@ -121,6 +121,7 @@ class TalysLibManager//потом перенсти в отдельный фай�
 	bool DeleteNucleiInGrid=true;
 	bool DeleteDirectoryAfterReading=true;
 	bool RemoteCalculation=false;
+	bool AllowNotPhysicalGamma=false;//запрещает нефизичные гамма (те, которые конкурируют с эмиссией нуклонов или альфа-частиц)
 	string RemoteIP="127.0.0.1";
 	int RemotePort=9090;
 	int MaxNumberOfThreads=16;
@@ -773,9 +774,8 @@ class NucleusData:public TObject
 	float BNECS_g, BNECS_n, BNECS_p, BNECS_d, BNECS_t, BNECS_tau, BNECS_a, TEISTot,TEISCont,TEISDiscr;//binary non-elastic cross-sections, total exclusive inelastic cross-sections
 	
 	vector<double> BNECS_g_Values, BNECS_n_Values, BNECS_p_Values, BNECS_d_Values, BNECS_t_Values, BNECS_tau_Values, BNECS_a_Values, TEISTot_Values,TEISCont_Values,TEISDiscr_Values;
-	
-	
-	
+	float p_binding=1e9,n_binding=1e9,a_binding=1e9;//энергии отделения протона, нейтрона и альфа
+	float a_coulomb_barrier=1e9, p_coulomb_barrier=1e9;
 	bool TalysGroundStateExsists=false, FastFlag=true, FastCalculated=false;
 	int OMPoptionN=1, OMPoptionP=1;
 	int WriteOMPOrUseKoningP=-1;
@@ -1295,6 +1295,8 @@ class TalysLibSPF//
 	public:
 	double _GetNuclearMass(string nucleus);
 	double _GetAbundance(string nucleus);
+	int _GetZ(string nucleus);
+	int _GetA(string nucleus);
 
 	double _GetNuclearMass(int Z, int A);
 	double _GetSeparationEnergy(string nucleus, string particle="n");

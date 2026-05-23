@@ -47,3 +47,15 @@ double TalysLibSPF::_RelKineticEnergy(float ma,float mA,float mb,float mB,float 
 {
 	return RelKineticEnergy( ma, mA, mb, mB, Ta, angle);
 }
+int TalysLibSPF::_GetZ(string nucleus)
+{
+	int z,a;
+	GetAZ(nucleus,z,a);
+	return z;
+}
+int TalysLibSPF::_GetA(string nucleus)
+{
+	int z,a;
+	GetAZ(nucleus,z,a);
+	return a;
+}
