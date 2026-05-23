@@ -1229,6 +1229,7 @@ class TLMaterial:public TObject
 	TH1F GammaSpectrum;
 	TH1F* GenerateGammaSpectrum(string DetectorType="HPGe",TF1 *ResolutionFunction=0);
 	void GenerateEnergyGrid(double min, double step, double max);
+	void SetEnergyGrid(vector<double> Grid);
 	GammaTransition* GetMostIntenseGammaTransition();
 	~TLMaterial()
 	{

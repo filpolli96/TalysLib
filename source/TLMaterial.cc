@@ -48,6 +48,15 @@ void TLMaterial::GenerateEnergyGrid(double min, double step,double max)
 		Nuclides[i]->GenerateEnergyGrid(min,step,max);
 	}
 }
+void TLMaterial::SetEnergyGrid(vector<double> Grid)
+{
+	WithEnergyGrid=true;
+	for(unsigned int i=0;i<Nuclides.size();i++)
+	{
+		Nuclides[i]->SetEnergyGrid(Grid);
+	}
+	
+}
 
 void EvalInThreadForTLMaterial(Nucleus *Nucl,int NThread)
 {
