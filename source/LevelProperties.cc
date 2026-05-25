@@ -1414,7 +1414,9 @@ void Level::EvalAlternativeAdist()
 		
 		double ProjEnergy=fNucleus->fMotherNucleus->ProjectileEnergy;
 		double ProjMass=fNucleus->fMotherNucleus->ProjectileMass;
-		double CMenergy = 12.01;
+		double TargetMass = fNucleus->fMotherNucleus->GetMass();
+		double CMenergy = sqrt(pow(ProjMass+TargetMass,2)+2*TargetMass*ProjEnergy)-ProjMass-TargetMass;
+		//cout<<"CENTER MASS ENERGY: "<<CMenergy<<endl;
 		double k2=2*ProjMass*CMenergy/pow(197.3,2)/10.0;
 		
 		for(auto &i: D)

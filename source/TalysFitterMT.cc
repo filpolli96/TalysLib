@@ -393,13 +393,60 @@ double TalysFitterMT::EstimateEpsilonValueForParameter(int parNumber)
 	return Epsilon;
 }
 
+// void TalysFitterMT::DrawFitProgress()
+// {
+// 	if(gPad==0)
+// 	{
+// 		new TCanvas("c","c",1024,1450);
+// 	}
+// 	TCanvas *c=gPad->GetCanvas();
+// 	c->Clear();
+// 	if(!UseC4)
+// 	{
+// 		c->Divide(1,2);
+// 		c->cd(1);
+// 		Chi2Values.Draw("al");
+// 		gPad->SetLogy(1);
+// 		c->cd(2);
+// 		GraphForMultiFit.Draw("ap");
+// 		FitValues.Draw("l");
+// 		gPad->SetLogy(1);
+// 		c->Update();
+// 	}
+// 	else
+// 	{
+// 		int nx,ny;
+// 		nx=sqrt(C4DataForFit.size());
+// 		ny=(C4DataForFit.size())/nx+1;
+		
+// 		vector<TPad*> Pads=GeneratePadsOnCanvas(0.1,0.1,0.9,0.7,nx,ny,c);
+// 		TPad *p=new TPad("p","p",0.1,0.8,0.9,0.9);
+// 		p->Draw();
+// 		p->cd();
+// 		Chi2Values.Draw("al");
+// 		for(unsigned int i=0;i<C4DataForFit.size();i++)
+// 		{
+// 			Pads[i]->cd();
+// 			C4DataForFit[i]->DrawWithCalculationResult("alp",&Nuclide);
+// 		}
+// 	}
+// }
+
 void TalysFitterMT::DrawFitProgress()
 {
+	TString open_name = "FitProgress.pdf[",
+			prn_name = "FitProgress.pdf",
+			close_name = "FitProgress.pdf]";
+	int check = 0;
 	if(gPad==0)
 	{
-		new TCanvas("c","c",1024,1450);
+		new TCanvas("c","c",1024,1024);
+		
+		check=1;
 	}
-	TCanvas *c=gPad->GetCanvas();
+
+	TCanvas *c = gPad->GetCanvas();	
+	if(check==1) c->Print(open_name,"pdf");
 	c->Clear();
 	if(!UseC4)
 	{
@@ -411,7 +458,11 @@ void TalysFitterMT::DrawFitProgress()
 		GraphForMultiFit.Draw("ap");
 		FitValues.Draw("l");
 		gPad->SetLogy(1);
+		TPaveText p = GenerateTPaveTextForFitResult();
+		p.Draw();
+		c->Print(prn_name, "pdf");
 		c->Update();
+		
 	}
 	else
 	{
@@ -431,6 +482,7 @@ void TalysFitterMT::DrawFitProgress()
 		}
 	}
 }
+
 void TalysFitterMT::FCN(int &npar, double *gin, double &f, double *par, int flag)
 {
 	vector<double> grad;
@@ -616,3 +668,15 @@ void TalysFitterMT::AddC4GraphVector(vector<TGraphErrors*> ExpData)
 	InitNuclide.UseEnergyGrid=true;
 }
 
+void TalysFitterMT::ClosePDF()
+{
+	TString open_name = "FitProgress.pdf[",
+		prn_name = "FitProgress.pdf",
+		close_name = "FitProgress.pdf]";
+	if(gPad!=0)
+	{
+		//new TCanvas("c","c",1024,1450);
+		TCanvas *c=gPad->GetCanvas();
+		c->Print(close_name);
+	}	
+}

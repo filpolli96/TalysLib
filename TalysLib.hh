@@ -1112,6 +1112,9 @@ class TalysFitterMT
 	vector<double> Offsets;
 	TGraphErrors GraphForMultiFit;
 	
+	void ClosePDF();
+
+	
 	void AddToGraphForMultiFit(TGraphErrors *gr, double Mv);
 	void AddToGraphForMultiFit(TGraph *gr, double Mv);
 	void GenerateGraphForMultiFit(vector<TObject*> &PointersToGraphs,vector<double> &_Offsets);
