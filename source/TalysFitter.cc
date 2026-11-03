@@ -76,7 +76,7 @@ double TalysFitter::Eval(double *x, double *p)
 }
 TF1 *TalysFitter::GenerateTF1(string name, double x_min,double x_max)
 {
-	FitFunction=TF1(name.c_str(),this,&TalysFitter::Eval,x_min,x_max,Parameters.size(),"TalysFitter","Eval");
+	FitFunction=TF1(name.c_str(),this,&TalysFitter::Eval,x_min,x_max,Parameters.size());
 	for(unsigned int i=0;i<Parameters.size();i++)
 	{
 		FitFunction.SetParameter(i,Parameters[i]);
