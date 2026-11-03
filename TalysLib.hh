@@ -31,7 +31,7 @@
 #include "C4Reader/C4.hh"
 #include "C4Reader/C5.hh"
 #include "YAML/YANDF.hh"
-#include "SQLiteRW/SQLiteRW.hh"
+//#include "SQLiteRW/SQLiteRW.hh"
 #include "Parser.hh"
 
 #include "nlohmann/json.hpp"//нужно для работы с json - объектами, которые хранятся в виде string
@@ -814,7 +814,8 @@ class Nucleus:public NucleusData
 	
 	vector<string> CalculationResultFilenames;//в этом векторе хранятся имена файлов с результатами расчетов
 	void GenerateListOfProducts_v2();//функция, делфющая список ядер в версии 2...
-	void ReadTalysCalculationResult_v2();//функция, читающая результаты расчетов в версии 2...
+	void ReadTalysCalculationResult_v2(int behaviour_flag=0);//функция, читающая результаты расчетов в версии 2... behaviour_flag определяет поведение функции при чтении файлов, содержащих много 
+	//энергий. Если behaviour_flag==0, то выполняется чтение "как обычно, последнего элемента векторов", если ==1, то выполняется дополнение векторов, если ==2, то перезапись
 	
 	C5Manager c5_manager;
 	/*void AssignC5ToLevel();
@@ -1178,6 +1179,8 @@ class GammaPeakData:public TObject//описывается в TLMaterial.cpp
 	vector<string> Reactions;
 	string Reacstr;
 	TLMaterial *fMaterial=0;
+	string ToString(string Option="");
+	
 	ClassDef(GammaPeakData, CLASSVERSION);
 };
 
@@ -1220,8 +1223,9 @@ class TLMaterial:public TObject
 	void AddElement(string Element, int Q);
 	void AddBackground(string PathToBackground);
 	void SaveToXLSX(string filename);
-	GammaPeakData FindGammaTransitionsForPeak(double Energy,double Sigma,double CrossSectionThreshold=0, double Length=0,bool UseAbundancy=true, bool AtLeastOne=false,double EThr=14.1, bool Always_n2n=false);//толщина - в см
-	GammaPeakData FindGammaTransitionsForInterval(double EMin,double EMax,double CrossSectionThreshold=0, double Length=0,bool UseAbundancy=true, bool AtLeastOne=false,double EThr=14.1, bool Always_n2n=false);//толщина - в см
+	GammaPeakData FindGammaTransitionsForPeak(double Energy,double Sigma,double CrossSectionThreshold=0, double Length=0,bool UseAbundancy=true, bool AtLeastOne=false,double EThr=14.1, bool Always_n2n=false,string SelectedElement="");//толщина - в см
+	GammaPeakData FindGammaTransitionsForInterval(double EMin,double EMax,double CrossSectionThreshold=0, double Length=0,bool UseAbundancy=true, bool AtLeastOne=false,double EThr=14.1, bool Always_n2n=false,string SelectedElement="");//толщина - в см, SelectedElement - посчитать эффективное сечение только для конкретного элемента. Переходы останутся, но сечение будет
+	//учитывать только этот элемент
 	static GammaPeakData FindGammaTransitionsForInterval(vector<GammaTransition*> GT_,double EMin,double EMax,double Length=0,bool Add_n2n=false);//толщина - в см
 	void PrintGammas(double CrossSectionThreshold=0,bool UseAbundancy=true);
 	vector<GammaTransition*> GetGammaTransitions(double CrossSectionThreshold=0,bool UseAbundancy=true);
@@ -1243,6 +1247,10 @@ class TLMaterial:public TObject
 	}
 	Nucleus* FindNuclide(int Z, int A);
 	Nucleus* FindNuclide(string NuclName);
+	void SetAbundances(vector<string> Nuclides,vector<double> Abundances);
+	void LoadPreCalculatedMaterial(string fname);//метод для загрузки ранее рассчитанных сечений гамма из файла fname
+	void LoadPreCalculatedMaterial(vector<string> fnames);//метод для загрузки ранее рассчитанных сечений гамма из ранее рассчитанных сечений для элементов
+	void AssignPointers();
 	ClassDef(TLMaterial, CLASSVERSION);
 };
 
@@ -1299,18 +1307,24 @@ class TalysLibSPF//
 	public:
 	double _GetNuclearMass(string nucleus);
 	double _GetAbundance(string nucleus);
+	double _GetAbundance(string nucleus,string EnrichedIsotope,double abun);
+	
 	int _GetZ(string nucleus);
 	int _GetA(string nucleus);
 
 	double _GetNuclearMass(int Z, int A);
 	double _GetSeparationEnergy(string nucleus, string particle="n");
 	double _GetSeparationEnergy(int nucleus_Z, int nucleus_A, int particle_Z, int particle_A);
-
+	
 	double _RecoilEnergyFromGammaEmission(double Egamma, string nuclide);
 	int _Nproc();
 	float _EvalKineticEnergy(float ma,float mA,float mb,float mB,float Ta,float angle,float Q);//reference: http://nuclphys.sinp.msu.ru/reactions/cinem.htm
 	float _EvalKineticEnergy(string a,string A,string b,string B,float Ta,float angle);//reference: http://nuclphys.sinp.msu.ru/reactions/cinem.htm
 	float _EvalKineticEnergy(string a,string A,string b,string B,float Ta,float angle,double Q);//reference: http://nuclphys.sinp.msu.ru/reactions/cinem.htm
 	double _RelKineticEnergy(float ma,float mA,float mb,float mB,float Ta,float angle);//релятивистская формула для кинетической энергии. Для расчета энергий неупруго рассеянных нейтронов нужно добавить Q к mB при вызове
+	string _GetElementName(int Z);
+	vector<string> _GetElementNames(int Z);
+	vector<string> _GetElementNames(string NuclName);
+	
 	ClassDef(TalysLibSPF, CLASSVERSION);
 };
